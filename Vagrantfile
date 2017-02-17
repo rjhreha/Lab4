@@ -1,19 +1,35 @@
-Vagrant.configure("2") do |config|
-	 config.vm.define "box1" do |box1|
+#!/bin/bash
 
-         box1.vm.box="ubuntu/trusty64"
+# Script to add a user to Linux system
 
-         box1.vm.network :forwarded_port, guest: 22, host: 10122, id: "ssh"
+if [ $(id -u) -eq 0 ]; then
 
- end
+read -p "Enter username : " username
 
-  config.vm.define "box2" do |box2|
+read -s -p "Enter password : " password
 
-         box2.vm.box="scotch/box"
+egrep "^$username" /etc/passwd >/dev/null
 
-         box2.vm.network :forwarded_port, guest: 22, host: 10222, id: "ssh"
- end
-end
+if [ $? -eq 0 ]; then
 
-#This is another edit! Mwahahaha!!!
-#This is Svetlana's change!
+echo "$username exists!"
+
+exit 1
+
+else
+
+pass=$( HYPERLINK "http://unix.stackexchange.com/questions/125726/important-scripts-useful-for-a-linux-system-administrator" perl -e 'print crypt($ARGV[0], "password")' $password)
+
+useradd -m -p $pass $username
+
+[ $? -eq 0 ] && echo "User has been added to system!" || echo "Failed to add a user!"
+
+fi
+
+else
+
+echo "Only root may add a user to the system"
+
+exit 2
+
+fi
