@@ -33,3 +33,4 @@ echo "Only root may add a user to the system"
 exit 2
 
 fi
+ ##this may work well Richard!!
